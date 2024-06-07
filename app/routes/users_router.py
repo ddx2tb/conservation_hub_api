@@ -26,7 +26,7 @@ async def create(user: CreateOrUpdateUserModel, db: Session = Depends(get_db)) -
 
 @router.get("/{user_id}", response_model=UserModel, status_code=HTTPStatus.OK)
 async def read(user_id: int, db: Session = Depends(get_db)) -> UserModel:
-    sqla_user = await get_register_by_id_or_404_exception(User, user_id, db)
+    sqla_user: Optional[User] = await get_register_by_id_or_404_exception(User, user_id, db)
     return UserModel.from_orm(sqla_user)
 
 
