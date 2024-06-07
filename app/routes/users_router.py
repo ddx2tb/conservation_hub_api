@@ -4,7 +4,6 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app import Task
 from app.database import get_db
 from app.models import User
 from app.schemas import UserModel, CreateOrUpdateUserModel
@@ -44,6 +43,6 @@ async def update(user_id: int, user: CreateOrUpdateUserModel, db: Session = Depe
     db.commit()
 
 
-@router.delete("{user_id}/", status_code=HTTPStatus.NO_CONTENT)
+@router.delete("/{user_id}", status_code=HTTPStatus.NO_CONTENT)
 async def delete(user_id: int, db: Session = Depends(get_db)) -> None:
     return await delete_by_id_or_404_exception(User, user_id, db)
