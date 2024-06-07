@@ -2,21 +2,29 @@ from http import HTTPStatus
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
+from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import User
 from app.schemas import UserModel, CreateOrUpdateUserModel
 from app.utils.db import get_register_by_id, get_register_by_id_or_404_exception, delete_by_id_or_404_exception
+from app.utils.user import get_user_by_username
 
 router = APIRouter(prefix="/users", tags=["users"])
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @router.post("/", response_model=UserModel, status_code=HTTPStatus.CREATED)
 async def create(user: CreateOrUpdateUserModel, db: Session = Depends(get_db)) -> UserModel:
+    sqla_user: Optional[User] = await get_user_by_username(user.username, db)
+
+    if sqla_user:
+        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail="User already exists")
+
     sqla_resource: Optional[User] = User(
         username=user.username,
-        password=user.password,
+        password=pwd_context.hash(user.password),
     )
     db.add(sqla_resource)
     db.commit()
