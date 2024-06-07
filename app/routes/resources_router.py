@@ -45,6 +45,6 @@ async def update(resource_id: int, resource: ResourceModel, db: Session = Depend
     db.commit()
 
 
-@router.delete("{resource_id}/", status_code=HTTPStatus.NO_CONTENT)
+@router.delete("/{resource_id}", status_code=HTTPStatus.NO_CONTENT)
 async def delete(resource_id: int, db: Session = Depends(get_db)) -> None:
     return await delete_by_id_or_404_exception(Resource, resource_id, db)

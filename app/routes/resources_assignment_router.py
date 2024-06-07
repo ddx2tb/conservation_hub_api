@@ -35,7 +35,8 @@ async def read(resource_assignment_id: int, db: Session = Depends(get_db)) -> Re
 @router.put("/{resource_assignment_id}", status_code=HTTPStatus.NO_CONTENT)
 async def update(resource_assignment_id: int, resource_assignment: ResourceAssignmentModel,
                  db: Session = Depends(get_db)) -> None:
-    sqla_resource_assignment: Optional[ResourceAssignment] = await get_register_by_id(db, ResourceAssignment, resource_assignment_id)
+    sqla_resource_assignment: Optional[ResourceAssignment] = await get_register_by_id(db, ResourceAssignment,
+                                                                                      resource_assignment_id)
 
     if not sqla_resource_assignment:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND)

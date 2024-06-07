@@ -5,7 +5,6 @@ from .resource_model import CreateResourceModel, ResourceModel
 from .task_model import CreateTaskModel, TaskModel
 from .user_model import CreateOrUpdateUserModel, UserModel
 
-
 __all__ = [
     "CreateEcosystemModel",
     "EcosystemModel",

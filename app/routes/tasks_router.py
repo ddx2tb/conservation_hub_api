@@ -52,6 +52,6 @@ async def update(task_id: int, task: TaskModel, db: Session = Depends(get_db)) -
     db.commit()
 
 
-@router.delete("{task_id}/", status_code=HTTPStatus.NO_CONTENT)
+@router.delete("/{task_id}", status_code=HTTPStatus.NO_CONTENT)
 async def delete(task_id: int, db: Session = Depends(get_db)) -> None:
     return await delete_by_id_or_404_exception(Task, task_id, db)
