@@ -30,7 +30,7 @@ async def create(task: CreateTaskModel, db: Session = Depends(get_db)) -> TaskMo
 
 @router.get("/{task_id}", response_model=TaskModel, status_code=HTTPStatus.OK)
 async def read(task_id: int, db: Session = Depends(get_db)) -> TaskModel:
-    sqla_task = await get_register_by_id_or_404_exception(Task, task_id, db)
+    sqla_task: Optional[Task] = await get_register_by_id_or_404_exception(Task, task_id, db)
     return TaskModel.from_orm(sqla_task)
 
 

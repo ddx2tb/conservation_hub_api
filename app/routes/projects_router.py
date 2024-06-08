@@ -25,7 +25,7 @@ async def create(project: CreateProjectModel, db: Session = Depends(get_db)) -> 
 
 @router.get("/{project_id}", response_model=ProjectModel, status_code=HTTPStatus.OK)
 async def read(project_id: int, db: Session = Depends(get_db)) -> ProjectModel:
-    sqla_project = await get_register_by_id_or_404_exception(Project, project_id, db)
+    sqla_project: Optional[Project] = await get_register_by_id_or_404_exception(Project, project_id, db)
     return ProjectModel.from_orm(sqla_project)
 
 
