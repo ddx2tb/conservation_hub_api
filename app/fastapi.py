@@ -14,17 +14,17 @@ Base.metadata.create_all(bind=engine)
 
 
 def register_routes(app: FastAPI) -> FastAPI:
+    app.include_router(users_router)
     app.include_router(ecosystems_router)
     app.include_router(projects_router)
     app.include_router(tasks_router)
     app.include_router(resources_router)
     app.include_router(resources_assignment_router)
-    app.include_router(users_router)
     return app
 
 
 def create_app(project_settings: Settings) -> FastAPI:
-    return FastAPI(title=project_settings.title, )
+    return FastAPI(title=project_settings.title)
 
 
 def init_app(project_settings: Settings) -> FastAPI:
