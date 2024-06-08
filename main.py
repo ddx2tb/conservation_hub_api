@@ -1,10 +1,6 @@
 from fastapi import FastAPI
 
 from app.fastapi import init_app
-from app.settings import Settings
+from app.settings import default_settings
 
-settings = Settings(
-    title="Conservation HUB",
-)
-
-app: FastAPI = init_app(settings)
+app: FastAPI = init_app(default_settings)

@@ -4,6 +4,8 @@ from pydantic import BaseModel
 
 
 class CreateProjectModel(BaseModel):
+    name: str
+    description: str
     ecosystem_id: int
     creation_date: datetime
     modification_date: datetime

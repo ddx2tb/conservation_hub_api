@@ -1,19 +1,20 @@
-from http import HTTPStatus
-from typing import Optional
+from typing import Optional, Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app import Task
 from app.database import get_db
-from app.schemas import TaskModel, CreateTaskModel
+from app.schemas import TaskModel, CreateTaskModel, UserModel
 from app.utils.db import get_register_by_id, get_register_by_id_or_404_exception, delete_by_id_or_404_exception
+from app.utils.user import get_current_user
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 
-@router.post("/", response_model=TaskModel, status_code=HTTPStatus.CREATED)
-async def create(task: CreateTaskModel, db: Session = Depends(get_db)) -> TaskModel:
+@router.post("/", response_model=TaskModel, status_code=status.HTTP_201_CREATED)
+async def create(task: CreateTaskModel, _: Annotated[UserModel, Depends(get_current_user), None],
+               db: Annotated[Session, Depends(get_db)]) -> TaskModel:
     sqla_resource: Optional[Task] = Task(
         project_id=task.project_id,
         name=task.name,
@@ -28,18 +29,20 @@ async def create(task: CreateTaskModel, db: Session = Depends(get_db)) -> TaskMo
     return TaskModel.from_orm(sqla_resource)
 
 
-@router.get("/{task_id}", response_model=TaskModel, status_code=HTTPStatus.OK)
-async def read(task_id: int, db: Session = Depends(get_db)) -> TaskModel:
+@router.get("/{task_id}", response_model=TaskModel, status_code=status.HTTP_200_OK)
+async def read(task_id: int, _: Annotated[UserModel, Depends(get_current_user), None],
+               db: Annotated[Session, Depends(get_db)]) -> TaskModel:
     sqla_task: Optional[Task] = await get_register_by_id_or_404_exception(Task, task_id, db)
     return TaskModel.from_orm(sqla_task)
 
 
-@router.put("/{task_id}", status_code=HTTPStatus.NO_CONTENT)
-async def update(task_id: int, task: TaskModel, db: Session = Depends(get_db)) -> None:
+@router.put("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def update(task_id: int, task: TaskModel, _: Annotated[UserModel, Depends(get_current_user), None],
+               db: Annotated[Session, Depends(get_db)]) -> None:
     sqla_task: Optional[Task] = await get_register_by_id(db, Task, task_id)
 
     if not sqla_task:
-        raise HTTPException(status_code=HTTPStatus.NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
     sqla_task.id = task.id
     sqla_task.project_id = task.project_id
@@ -52,6 +55,7 @@ async def update(task_id: int, task: TaskModel, db: Session = Depends(get_db)) -
     db.commit()
 
 
-@router.delete("/{task_id}", status_code=HTTPStatus.NO_CONTENT)
-async def delete(task_id: int, db: Session = Depends(get_db)) -> None:
+@router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete(task_id: int, _: Annotated[UserModel, Depends(get_current_user), None],
+               db: Annotated[Session, Depends(get_db)]) -> None:
     return await delete_by_id_or_404_exception(Task, task_id, db)

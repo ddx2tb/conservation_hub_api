@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 Base = declarative_base()
-engine = create_engine('sqlite:///conservation_hub.db')
+engine = create_engine('sqlite:///conservation_hub_api.db')
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
