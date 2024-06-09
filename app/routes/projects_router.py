@@ -1,6 +1,7 @@
 from typing import Optional, Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 from app import Project
@@ -14,7 +15,7 @@ router = APIRouter(prefix="/projects", tags=["projects"])
 
 @router.post("/", response_model=ProjectModel, status_code=status.HTTP_201_CREATED)
 async def create(project: CreateProjectModel, _: Annotated[UserModel, Depends(get_current_user), None],
-               db: Annotated[Session, Depends(get_db)]) -> ProjectModel:
+                 db: Annotated[Session, Depends(get_db)]) -> ProjectModel:
     sqla_project: Optional[Project] = Project(
         ecosystem_id=project.ecosystem_id,
         name=project.name,
@@ -26,15 +27,15 @@ async def create(project: CreateProjectModel, _: Annotated[UserModel, Depends(ge
 
 
 @router.get("/{project_id}", response_model=ProjectModel, status_code=status.HTTP_200_OK)
-async def read(project_id: int, _: Annotated[UserModel, Depends(get_current_user), None],
+async def read(project_id: UUID4, _: Annotated[UserModel, Depends(get_current_user), None],
                db: Annotated[Session, Depends(get_db)]) -> ProjectModel:
     sqla_project: Optional[Project] = await get_register_by_id_or_404_exception(Project, project_id, db)
     return ProjectModel.from_orm(sqla_project)
 
 
 @router.put("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def update(project_id: int, project: ProjectModel, _: Annotated[UserModel, Depends(get_current_user), None],
-               db: Annotated[Session, Depends(get_db)]) -> None:
+async def update(project_id: UUID4, project: ProjectModel, _: Annotated[UserModel, Depends(get_current_user), None],
+                 db: Annotated[Session, Depends(get_db)]) -> None:
     sqla_project: Optional[Project] = await get_register_by_id(db, Project, project_id)
 
     if not sqla_project:
@@ -49,6 +50,6 @@ async def update(project_id: int, project: ProjectModel, _: Annotated[UserModel,
 
 
 @router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete(project_id: int, _: Annotated[UserModel, Depends(get_current_user), None],
-               db: Annotated[Session, Depends(get_db)]) -> None:
+async def delete(project_id: UUID4, _: Annotated[UserModel, Depends(get_current_user), None],
+                 db: Annotated[Session, Depends(get_db)]) -> None:
     return await delete_by_id_or_404_exception(Project, project_id, db)
