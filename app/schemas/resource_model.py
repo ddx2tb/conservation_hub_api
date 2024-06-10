@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 
 
 class CreateResourceModel(BaseModel):
@@ -8,7 +8,7 @@ class CreateResourceModel(BaseModel):
 
 
 class ResourceModel(CreateResourceModel):
-    id: int
+    id: UUID4
 
     class Config:
         from_attributes = True

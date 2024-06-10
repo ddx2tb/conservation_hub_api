@@ -3,6 +3,7 @@ from typing import Optional, Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -35,15 +36,16 @@ async def create(user: CreateOrUpdateUserModel, db: Annotated[Session, Depends(g
 
 
 @router.get("/{user_id}", response_model=UserModel, status_code=status.HTTP_200_OK)
-async def read(user_id: int, _: Annotated[UserModel, Depends(get_current_user), None],
+async def read(user_id: UUID4, _: Annotated[UserModel, Depends(get_current_user), None],
                db: Annotated[Session, Depends(get_db)]) -> UserModel:
     sqla_user: Optional[User] = await get_register_by_id_or_404_exception(User, user_id, db)
     return UserModel.from_orm(sqla_user)
 
 
 @router.put("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def update(user_id: int, user: CreateOrUpdateUserModel, _: Annotated[UserModel, Depends(get_current_user), None],
-               db: Annotated[Session, Depends(get_db)]) -> None:
+async def update(user_id: UUID4, user: CreateOrUpdateUserModel,
+                 _: Annotated[UserModel, Depends(get_current_user), None],
+                 db: Annotated[Session, Depends(get_db)]) -> None:
     sqla_user: Optional[User] = await get_register_by_id(db, User, user_id)
 
     if not sqla_user:
@@ -56,8 +58,8 @@ async def update(user_id: int, user: CreateOrUpdateUserModel, _: Annotated[UserM
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete(user_id: int, _: Annotated[UserModel, Depends(get_current_user), None],
-               db: Annotated[Session, Depends(get_db)]) -> None:
+async def delete(user_id: UUID4, _: Annotated[UserModel, Depends(get_current_user), None],
+                 db: Annotated[Session, Depends(get_db)]) -> None:
     return await delete_by_id_or_404_exception(User, user_id, db)
 
 

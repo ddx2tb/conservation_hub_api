@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 
 
 class CreateProjectModel(BaseModel):
@@ -12,7 +12,7 @@ class CreateProjectModel(BaseModel):
 
 
 class ProjectModel(CreateProjectModel):
-    id: int
+    id: UUID4
 
     class Config:
         from_attributes = True

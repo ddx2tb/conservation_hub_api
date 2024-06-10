@@ -1,6 +1,7 @@
 from typing import Optional, Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 from app import ResourceAssignment
@@ -15,7 +16,7 @@ router = APIRouter(prefix="/resources_assignment", tags=["resources_assignment"]
 @router.post("/", response_model=ResourceAssignmentModel, status_code=status.HTTP_201_CREATED)
 async def create(resource_assignment: CreateResourceAssignmentModel,
                  _: Annotated[UserModel, Depends(get_current_user), None],
-               db: Annotated[Session, Depends(get_db)]) -> ResourceAssignmentModel:
+                 db: Annotated[Session, Depends(get_db)]) -> ResourceAssignmentModel:
     sqla_resource_assignment: Optional[ResourceAssignment] = ResourceAssignment(
         task_id=resource_assignment.task_id,
         resource_id=resource_assignment.resource_id,
@@ -28,16 +29,16 @@ async def create(resource_assignment: CreateResourceAssignmentModel,
 
 
 @router.get("/{resource_assignment_id}", response_model=ResourceAssignmentModel, status_code=status.HTTP_200_OK)
-async def read(resource_assignment_id: int, _: Annotated[UserModel, Depends(get_current_user), None],
+async def read(resource_assignment_id: UUID4, _: Annotated[UserModel, Depends(get_current_user), None],
                db: Annotated[Session, Depends(get_db)]) -> ResourceAssignmentModel:
     sqla_resource_assignment = await get_register_by_id_or_404_exception(ResourceAssignment, resource_assignment_id, db)
     return ResourceAssignmentModel.from_orm(sqla_resource_assignment)
 
 
 @router.put("/{resource_assignment_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def update(resource_assignment_id: int, resource_assignment: ResourceAssignmentModel,
+async def update(resource_assignment_id: UUID4, resource_assignment: ResourceAssignmentModel,
                  _: Annotated[UserModel, Depends(get_current_user), None],
-               db: Annotated[Session, Depends(get_db)]) -> None:
+                 db: Annotated[Session, Depends(get_db)]) -> None:
     sqla_resource_assignment: Optional[ResourceAssignment] = await get_register_by_id(db, ResourceAssignment,
                                                                                       resource_assignment_id)
 
@@ -52,6 +53,6 @@ async def update(resource_assignment_id: int, resource_assignment: ResourceAssig
 
 
 @router.delete("/{resource_assignment_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete(resource_assignment_id: int, _: Annotated[UserModel, Depends(get_current_user), None],
-               db: Annotated[Session, Depends(get_db)]) -> None:
+async def delete(resource_assignment_id: UUID4, _: Annotated[UserModel, Depends(get_current_user), None],
+                 db: Annotated[Session, Depends(get_db)]) -> None:
     return await delete_by_id_or_404_exception(ResourceAssignment, resource_assignment_id, db)

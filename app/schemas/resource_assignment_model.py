@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 
 
 class CreateResourceAssignmentModel(BaseModel):
@@ -8,7 +8,7 @@ class CreateResourceAssignmentModel(BaseModel):
 
 
 class ResourceAssignmentModel(CreateResourceAssignmentModel):
-    id: int
+    id: UUID4
 
     class Config:
         from_attributes = True
