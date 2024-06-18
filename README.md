@@ -12,6 +12,24 @@ openssl rand -hex 32
 pip install -r requirements.txt
 ```
 
+## Getting Started
+
+First, run the development server:
+
+```bash
+python3 -m venv venv
+# and
+source venv/bin/activate
+# and
+pip install -r requirements.txt
+# and
+uvicorn main:app
+```
+
+# Security / Login
+- JWT
+- UUID(s)
+
 # Database
 
 ![Database Diagram](/assets/images/conservation_hub_api_database.png "Database Diagram")
