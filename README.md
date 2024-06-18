@@ -26,6 +26,11 @@ pip install -r requirements.txt
 uvicorn main:app
 ```
 
+# Security / Login
+
+- UUID(s)
+- JWT
+
 # Database
 
 ![Database Diagram](/assets/images/conservation_hub_api_database.png "Database Diagram")
