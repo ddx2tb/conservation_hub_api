@@ -26,6 +26,18 @@ pip install -r requirements.txt
 uvicorn main:app
 ```
 
+# CRUD
+
+View and test CRUD
+
+- [users](http://127.0.0.1:8000/docs#/users/)
+    * [JWT](http://127.0.0.1:8000/docs#/users/login_for_access_token_users_token_post) (Get JWT token)
+- [ecosystems](http://127.0.0.1:8000/docs#/ecosystems/)
+- [projects](http://127.0.0.1:8000/docs#/projects/)
+- [tasks](http://127.0.0.1:8000/docs#/tasks/)
+- [resources](http://127.0.0.1:8000/docs#/resources/)
+- [resources_assignment](http://127.0.0.1:8000/docs#/resources_assignment/)
+
 # Security / Login
 
 - UUID(s)
