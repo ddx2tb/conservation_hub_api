@@ -27,8 +27,9 @@ uvicorn main:app
 ```
 
 # Security / Login
-- JWT
+
 - UUID(s)
+- JWT
 
 # Database
 
